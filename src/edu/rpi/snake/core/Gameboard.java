@@ -13,11 +13,11 @@ import static edu.rpi.snake.cons.Direct.*;
  */
 public class Gameboard {
     Tile tiles[][];
-    public Snake snake;
+    Point boardSize;
+    Snake snake;
 
     public Gameboard(BoardSize size) {
         Point startPoint;
-        Point boardSize;
         switch (size) {
             case SMALL:
                 boardSize = new Point(5, 5);
@@ -66,6 +66,10 @@ public class Gameboard {
         return true;
     }
 
+    public void move(Tile tile){
+        snake.move(tile);
+    }
+
     public Point getPosition(Tile tile) {
         for (int i = 0; i < tiles.length; i++){
             for (int j = 0; j< tiles[i].length; j++){
@@ -103,4 +107,13 @@ public class Gameboard {
         }
         return getDirection(tmp);
     }
+
+    public Point getBoardSize(){
+        return boardSize;
+    }
+
+    public Tile getTile(int x, int y){
+        return tiles[x][y];
+    }
+
 }

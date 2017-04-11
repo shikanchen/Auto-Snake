@@ -11,25 +11,25 @@ public class Snake extends ArrayList<Tile> {
     private int length = 0;
 
     public Snake(Tile startPoint) {
-        this.add(startPoint);
+        move(startPoint);
     }
 
     private void moveAndGrow(Tile tile) {
-        this.add(tile);
+        add(tile);
         tile.setType(TileType.SNAKE);
     }
 
     private void moveAndStop(Tile tile) {
-        this.add(tile);
+        add(tile);
         tile.setType(TileType.SNAKE);
-        this.remove(0);
+        remove(0);
     }
 
     private void stop() {
 
     }
 
-    public void Move(Tile tile) {
+    public void move(Tile tile) {
         switch (tile.getType()) {
             case BLANK:
                 moveAndStop(tile);
