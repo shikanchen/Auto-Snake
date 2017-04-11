@@ -10,8 +10,8 @@ import java.util.ArrayList;
 public class Snake extends ArrayList<Tile> {
     private int length = 0;
 
-    public Snake() {
-        super();
+    public Snake(Tile startPoint) {
+        this.add(startPoint);
     }
 
     private void moveAndGrow(Tile tile) {
@@ -31,10 +31,18 @@ public class Snake extends ArrayList<Tile> {
 
     public void Move(Tile tile) {
         switch (tile.getType()) {
-            case BLANK: moveAndStop(tile);
-            case FOOD: moveAndGrow(tile);
-            case SNAKE: stop();
-            default: stop();
+            case BLANK:
+                moveAndStop(tile);
+                break;
+            case FOOD:
+                moveAndGrow(tile);
+                break;
+            case SNAKE:
+                stop();
+                break;
+            default:
+                stop();
+                break;
         }
     }
 }
