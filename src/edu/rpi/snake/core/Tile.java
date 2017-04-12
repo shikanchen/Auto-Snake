@@ -8,10 +8,6 @@ import edu.rpi.snake.cons.TileType;
 public class Tile {
     private TileType type;
 
-    public Tile() {
-
-    }
-
     public Tile(TileType type) {
         this.type = type;
     }

@@ -3,20 +3,27 @@ package edu.rpi.snake.core;
 import edu.rpi.snake.cons.BoardSize;
 import edu.rpi.snake.cons.Direct;
 import edu.rpi.snake.cons.TileType;
+import edu.rpi.snake.main.Main;
 
 import java.awt.*;
 
 import static edu.rpi.snake.cons.Direct.*;
+import static java.lang.Thread.sleep;
 
 /**
  * Created by Jerry Chen on 4/10/17.
  */
-public class Gameboard {
+public class Gameboard implements Runnable{
+    Main window;
     Tile tiles[][];
     Point boardSize;
     Snake snake;
 
-    public Gameboard(BoardSize size) {
+    boolean stop = false;
+    boolean suspend = true;
+
+    public Gameboard(Main window, BoardSize size) {
+        this.window = window;
         Point startPoint;
         switch (size) {
             case SMALL:
@@ -46,8 +53,8 @@ public class Gameboard {
     }
 
     public boolean canMove(Direct direct) {
-        if (snake.size() >= 2){
-            switch (getDirection(new Direct[]{UP, RIGHT, DOWN, LEFT})){
+        if (snake.length() >= 2){
+            switch (snake.getDirection()){
                 case UP:
                     if (direct == DOWN) return false;
                     break;
@@ -66,8 +73,8 @@ public class Gameboard {
         return true;
     }
 
-    public void move(Tile tile){
-        snake.move(tile);
+    public void turn(Direct direct) {
+        if (canMove(direct)) snake.setDirection(direct);
     }
 
     public Point getPosition(Tile tile) {
@@ -79,35 +86,6 @@ public class Gameboard {
         return new Point(-1, -1);
     }
 
-    public Direct getDirection(Direct[] direct){
-        if (direct.length == 1) return direct[0];
-        Point last = getPosition(snake.get(snake.size() - 1));
-        Point last2 = getPosition(snake.get(snake.size() - 2));
-        switch (direct[0]){
-            case UP:
-                last2.translate(0, 1);
-                if (last.equals(last2)) return UP;
-                break;
-            case RIGHT:
-                last2.translate(1, 0);
-                if (last.equals(last2)) return RIGHT;
-                break;
-            case DOWN:
-                last2.translate(0, -1);
-                if (last.equals(last2)) return DOWN;
-                break;
-            case LEFT:
-                last2.translate(-1, 0);
-                if (last.equals(last2)) return LEFT;
-                break;
-        }
-        Direct[] tmp = new Direct[direct.length - 1];
-        for (int i = 0; i < tmp.length; i++) {
-            tmp[i] = direct[i+1];
-        }
-        return getDirection(tmp);
-    }
-
     public Point getBoardSize(){
         return boardSize;
     }
@@ -116,4 +94,47 @@ public class Gameboard {
         return tiles[x][y];
     }
 
+    @Override
+    public void run() {
+        while (!stop){
+            while (!suspend){
+                try {
+                    sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (canMove(snake.getDirection())){
+                    Point lp = getPosition(snake.getHead());
+                    switch (snake.getDirection()){
+                        case LEFT:
+                            lp.translate(-1, 0);
+                            break;
+                        case UP:
+                            lp.translate(0, -1);
+                            break;
+                        case RIGHT:
+                            lp.translate(1, 0);
+                            break;
+                        case DOWN:
+                            lp.translate(0, 1);
+                            break;
+                    }
+                    snake.move(tiles[lp.x][lp.y]);
+                }
+                window.repaint();
+            }
+        }
+    }
+
+    public void stop(){
+        stop = true;
+    }
+
+    public void pause(){
+        suspend = true;
+    }
+
+    public void resume(){
+        suspend = false;
+    }
 }
