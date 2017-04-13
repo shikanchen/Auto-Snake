@@ -1,6 +1,6 @@
 package edu.rpi.snake.gui;
 
-import edu.rpi.snake.core.Gameboard;
+import edu.rpi.snake.core.GameBoard;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,10 +8,10 @@ import java.awt.*;
 /**
  * Created by Jerry Chen on 4/11/17.
  */
-public class GameboardUI extends JComponent{
-    Gameboard board;
+public class GameBoardUI extends JComponent{
+    GameBoard board;
     TileUI[][] tileUI;
-    public GameboardUI(Gameboard board) {
+    public GameBoardUI(GameBoard board) {
         this.board = board;
         tileUI = new TileUI[board.getBoardSize().x][board.getBoardSize().y];
         for (int i = 0; i < tileUI.length; i++) {

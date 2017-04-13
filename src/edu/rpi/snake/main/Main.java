@@ -2,8 +2,8 @@ package edu.rpi.snake.main;
 
 import edu.rpi.snake.cons.BoardSize;
 import edu.rpi.snake.cons.Direct;
-import edu.rpi.snake.core.Gameboard;
-import edu.rpi.snake.gui.GameboardUI;
+import edu.rpi.snake.core.GameBoard;
+import edu.rpi.snake.gui.GameBoardUI;
 
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
@@ -24,10 +24,10 @@ public class Main extends JFrame{
         }
     }
 
-    Gameboard board = new Gameboard(this, BoardSize.XLARGE);
+    GameBoard board = new GameBoard(this, BoardSize.XLARGE);
 
     public Main(){
-        add(new GameboardUI(board));
+        add(new GameBoardUI(board));
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {

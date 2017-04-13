@@ -6,6 +6,8 @@ import edu.rpi.snake.cons.TileType;
 import edu.rpi.snake.main.Main;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Random;
 
 import static edu.rpi.snake.cons.Direct.*;
 import static java.lang.Thread.sleep;
@@ -13,16 +15,16 @@ import static java.lang.Thread.sleep;
 /**
  * Created by Jerry Chen on 4/10/17.
  */
-public class Gameboard implements Runnable{
+public class GameBoard implements Runnable{
     Main window;
-    Tile tiles[][];
+    static Tile tiles[][];
     Point boardSize;
     Snake snake;
 
-    boolean stop = false;
-    boolean suspend = true;
+    private static boolean stop = false;
+    private static boolean suspend = true;
 
-    public Gameboard(Main window, BoardSize size) {
+    public GameBoard(Main window, BoardSize size) {
         this.window = window;
         Point startPoint;
         switch (size) {
@@ -40,6 +42,7 @@ public class Gameboard implements Runnable{
                 break;
             default:
                 boardSize = new Point(15, 15);
+                break;
         }
         tiles = new Tile[boardSize.x][boardSize.y];
         startPoint = new Point(boardSize.x/2, boardSize.y/2);
@@ -50,6 +53,7 @@ public class Gameboard implements Runnable{
                 if (i == startPoint.x && j == startPoint.y) snake = new Snake(tiles[i][j]);
             }
         }
+        GameBoard.generateFood();
     }
 
     public boolean canMove(Direct direct) {
@@ -126,15 +130,26 @@ public class Gameboard implements Runnable{
         }
     }
 
-    public void stop(){
+    public static void generateFood(){
+        ArrayList<Tile> blanks = new ArrayList<>();
+        for (int i = 0; i < tiles.length; i++){
+            for (int j = 0; j< tiles[i].length; j++){
+                if (tiles[i][j].getType() == TileType.BLANK) blanks.add(tiles[i][j]);
+            }
+        }
+
+        blanks.get(new Random().nextInt(blanks.size())).setType(TileType.FOOD);
+    }
+
+    public static void stop(){
         stop = true;
     }
 
-    public void pause(){
+    public static void pause(){
         suspend = true;
     }
 
-    public void resume(){
+    public static void resume(){
         suspend = false;
     }
 }

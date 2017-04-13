@@ -4,7 +4,6 @@ import edu.rpi.snake.cons.Direct;
 import edu.rpi.snake.cons.TileType;
 
 import java.util.ArrayList;
-import java.util.Deque;
 
 /**
  * Created by Jerry Chen on 4/10/17.
@@ -26,6 +25,7 @@ public class Snake extends ArrayList<Tile> {
     private void moveAndGrow(Tile tile) {
         add(tile);
         tile.setType(TileType.SNAKE);
+        GameBoard.generateFood();
     }
 
     private void moveAndStop(Tile tile) {
@@ -37,7 +37,7 @@ public class Snake extends ArrayList<Tile> {
     }
 
     private void stop() {
-
+        GameBoard.stop();
     }
 
     public void move(Tile tile) {
