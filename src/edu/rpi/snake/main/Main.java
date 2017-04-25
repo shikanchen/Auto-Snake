@@ -1,5 +1,6 @@
 package edu.rpi.snake.main;
 
+import edu.rpi.snake.ai.SnakeAI;
 import edu.rpi.snake.cons.BoardSize;
 import edu.rpi.snake.cons.Direct;
 import edu.rpi.snake.core.GameBoard;
@@ -48,6 +49,10 @@ public class Main extends JFrame{
                 super.keyPressed(e);
             }
         });
+
+//        TODO Setup Agent Toggle
+        new SnakeAI(board, board.getSnake());
+
         board.resume();
         new Thread(board).start();
         setDefaultCloseOperation(EXIT_ON_CLOSE);

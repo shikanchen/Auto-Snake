@@ -19,7 +19,10 @@ public class GameBoard implements Runnable{
     Main window;
     static Tile tiles[][];
     Point boardSize;
-    Snake snake;
+
+    private Snake snake;
+
+    private Agent agent;
 
     private static boolean stop = false;
     private static boolean suspend = true;
@@ -29,16 +32,16 @@ public class GameBoard implements Runnable{
         Point startPoint;
         switch (size) {
             case SMALL:
-                boardSize = new Point(5, 5);
-                break;
-            case FAIR:
-                boardSize = new Point(10, 10);
-                break;
-            case LARGE:
                 boardSize = new Point(15, 15);
                 break;
-            case XLARGE:
+            case FAIR:
                 boardSize = new Point(20, 20);
+                break;
+            case LARGE:
+                boardSize = new Point(30, 30);
+                break;
+            case XLARGE:
+                boardSize = new Point(40, 40);
                 break;
             default:
                 boardSize = new Point(15, 15);
@@ -54,25 +57,24 @@ public class GameBoard implements Runnable{
             }
         }
         GameBoard.generateFood();
+        agent = makeNewRegular();
+        setAgent(agent);
     }
 
     public boolean canMove(Direct direct) {
-        if (snake.length() >= 2){
-            switch (snake.getDirection()){
-                case UP:
-                    if (direct == DOWN) return false;
-                    break;
-                case RIGHT:
-                    if (direct == LEFT) return false;
-                    break;
-                case DOWN:
-                    if (direct == UP) return false;
-                    break;
-                case LEFT:
-                    if (direct == RIGHT) return false;
-                    break;
-            }
-            return true;
+        switch (snake.getDirection()){
+            case UP:
+                if (direct == DOWN) return false;
+                break;
+            case RIGHT:
+                if (direct == LEFT) return false;
+                break;
+            case DOWN:
+                if (direct == UP) return false;
+                break;
+            case LEFT:
+                if (direct == RIGHT) return false;
+                break;
         }
         return true;
     }
@@ -101,31 +103,14 @@ public class GameBoard implements Runnable{
     @Override
     public void run() {
         while (!stop){
-            while (!suspend){
+            while (!suspend) {
                 try {
                     sleep(300);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (canMove(snake.getDirection())){
-                    Point lp = getPosition(snake.getHead());
-                    switch (snake.getDirection()){
-                        case LEFT:
-                            lp.translate(-1, 0);
-                            break;
-                        case UP:
-                            lp.translate(0, -1);
-                            break;
-                        case RIGHT:
-                            lp.translate(1, 0);
-                            break;
-                        case DOWN:
-                            lp.translate(0, 1);
-                            break;
-                    }
-                    snake.move(tiles[lp.x][lp.y]);
-                }
-                window.repaint();
+
+                agentActivate(agent);
             }
         }
     }
@@ -141,6 +126,24 @@ public class GameBoard implements Runnable{
         blanks.get(new Random().nextInt(blanks.size())).setType(TileType.FOOD);
     }
 
+    private void agentActivate(Agent agent){
+        synchronized (agent){
+            agent.activate();
+        }
+    }
+
+    public void setAgent(Agent agent){
+        this.agent = agent;
+    }
+
+    public Agent getAgent() {
+        return agent;
+    }
+
+    public Snake getSnake() {
+        return snake;
+    }
+
     public static void stop(){
         stop = true;
     }
@@ -151,5 +154,35 @@ public class GameBoard implements Runnable{
 
     public static void resume(){
         suspend = false;
+    }
+
+    class Regular implements Agent {
+
+        @Override
+        public void activate() {
+            if (canMove(snake.getDirection())){
+                Point lp = getPosition(snake.getHead());
+                switch (snake.getDirection()){
+                    case LEFT:
+                        lp.translate(-1, 0);
+                        break;
+                    case UP:
+                        lp.translate(0, -1);
+                        break;
+                    case RIGHT:
+                        lp.translate(1, 0);
+                        break;
+                    case DOWN:
+                        lp.translate(0, 1);
+                        break;
+                }
+                snake.move(tiles[lp.x][lp.y]);
+            }
+            window.repaint();
+        }
+    }
+
+    public Regular makeNewRegular(){
+        return new Regular();
     }
 }
