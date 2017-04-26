@@ -25,7 +25,7 @@ public class Main extends JFrame{
         }
     }
 
-    GameBoard board = new GameBoard(this, BoardSize.XLARGE);
+    GameBoard board = new GameBoard(this, BoardSize.LARGE);
 
     public Main(){
         add(new GameBoardUI(board));
@@ -45,13 +45,19 @@ public class Main extends JFrame{
                     case 40:
                         board.turn(Direct.DOWN);
                         break;
+
+//                    test
+                    case 32:
+                        board.setAgent(new SnakeAI(board));
+                        removeKeyListener(getKeyListeners()[0]);
+
                 }
                 super.keyPressed(e);
             }
         });
 
 //        TODO Setup Agent Toggle
-        new SnakeAI(board, board.getSnake());
+
 
         board.resume();
         new Thread(board).start();

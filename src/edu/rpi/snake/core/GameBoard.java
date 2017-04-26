@@ -21,6 +21,7 @@ public class GameBoard implements Runnable{
     Point boardSize;
 
     private Snake snake;
+    private static Tile food;
 
     private Agent agent;
 
@@ -105,7 +106,7 @@ public class GameBoard implements Runnable{
         while (!stop){
             while (!suspend) {
                 try {
-                    sleep(300);
+                    sleep(150);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -122,8 +123,8 @@ public class GameBoard implements Runnable{
                 if (tiles[i][j].getType() == TileType.BLANK) blanks.add(tiles[i][j]);
             }
         }
-
-        blanks.get(new Random().nextInt(blanks.size())).setType(TileType.FOOD);
+        food = blanks.get(new Random().nextInt(blanks.size()));
+        food.setType(TileType.FOOD);
     }
 
     private void agentActivate(Agent agent){
@@ -142,6 +143,10 @@ public class GameBoard implements Runnable{
 
     public Snake getSnake() {
         return snake;
+    }
+
+    public static Tile getFood() {
+        return food;
     }
 
     public static void stop(){
